@@ -1,0 +1,23 @@
+[
+  {
+    "fullName": "Asep Berlian",
+    "location": "Jakarta",
+    "job": "Front-End Developer",
+    "company": "Hacktiv9",
+    "UserId": 1
+  },
+  {
+    "fullName": "Mamat Gantar",
+    "location": "Bandung",
+    "job": "Back-End Developer",
+    "company": "Tokopaedi",
+    "UserId": 2
+  },
+  {
+    "fullName": "Dadang Atop",
+    "location": "Surabaya",
+    "job": "Human Resource",
+    "company": "Jual Jual",
+    "UserId": 3
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "username": "asep661",
+    "email": "asep@mail.com",
+    "role": "User",
+    "password": "asep123"
+  },
+  {
+    "id": 2,
+    "username": "mamat998",
+    "email": "mamat@mail.com",
+    "role": "User",
+    "password": "mamat123"
+  },
+  {
+    "id": 3,
+    "username": "dadang212",
+    "email": "dadang@mail.com",
+    "role": "Admin",
+    "password": "dadang123"
+  }
+]
