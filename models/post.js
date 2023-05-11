@@ -12,9 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Post.belongsTo(models.User)
-      Post.belongsToMany(models.User,{through:models.Favourite})
-
       // Post.hasMany(models.Favourite)
+      Post.belongsToMany(models.User,{through:models.Favourite,foreignKey:'PostId'})
     }
   }
   Post.init({
