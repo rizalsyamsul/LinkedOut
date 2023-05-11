@@ -12,6 +12,12 @@
 
     <h2 style="text-align: center;">Please Fill in your Profile </h2>
 
+    <% if (error) { %>
+      <% error.split(',').forEach(el =>{ %>
+        <p style="color: red;"><%= el %></p>
+      <%}) %>
+    <% } %>
+
     <div style="display: flex; justify-content: center; align-items: center;">
 
       <form action="/addPofile/<%= user.id %>" method="post" >

@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Profile.belongsTo(models.User)
     }
+    get jobCompany(){
+      return `${this.job} in ${this.company}`
+    }
   }
   Profile.init({
     fullName: {

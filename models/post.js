@@ -13,13 +13,42 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Post.belongsTo(models.User)
       // Post.hasMany(models.Favourite)
-      Post.belongsToMany(models.User,{through:models.Favourite,foreignKey:'PostId'})
+      Post.belongsToMany(models.User, { through: models.Favourite, foreignKey: 'PostId' })
     }
   }
   Post.init({
-    title: DataTypes.TEXT,
-    content: DataTypes.TEXT,
-    imgUrl: DataTypes.TEXT,
+    title: {
+      type: DataTypes.TEXT,
+      validate:
+      {
+        notEmpty:{
+          msg: `Title is Required`
+        }
+      }
+    },
+    content: {
+      type: DataTypes.TEXT,
+      validate:
+      {
+        notEmpty:{
+          msg: `Content is Required`
+        }
+      }
+    },
+    imgUrl: {
+      type: DataTypes.TEXT,
+      validate:
+      {
+        notEmpty:{
+          msg: `Image is Required`
+        },
+        isFilenameEmpty(value){
+          if (!value) {
+            throw new Error('filename is require')
+          }
+        }
+      }
+    },
     UserId: DataTypes.INTEGER
   }, {
     sequelize,

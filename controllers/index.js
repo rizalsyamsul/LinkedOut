@@ -1,13 +1,8 @@
 const { Post, Favourite, User, Profile } = require('../models')
 const bcrypt = require('bcryptjs');
 const dateFormatted = require('../helpers/dateFormatted')
-
+const { Op } = require("sequelize");
 class Controller {
-    static home(req, res) {
-
-    }
-
-
     static userAuth(req, res) {
         let { email, error } = req.query
         res.render('userAuth', { email, error })
@@ -26,6 +21,7 @@ class Controller {
 
     static login(req, res) {
         let { email, password } = req.body
+        let {error} = req.query
         User.findOne({
             where: {
                 email
@@ -41,23 +37,23 @@ class Controller {
 
                         if (user.role == "admin") {
                             if (!user.Profile) {
-                                return res.render('addProfile', {user})
+                                return res.render('addProfile', { user, error })
                             } else {
                                 return res.redirect('/admin');
                             }
                         } else if (user.role == "user") {
                             if (!user.Profile) {
-                                return res.render('addProfile', {user})
+                                return res.render('addProfile', { user, error })
                             } else {
                                 return res.redirect('/user');
                             }
                         }
 
-                    }else {
+                    } else {
                         const error = "Invalid email / password";
                         return res.redirect(`/?error=${error}`);
                     }
-                }else {
+                } else {
                     const error = "Invalid email / password";
                     return res.redirect(`/?error=${error}`);
                 }
@@ -83,11 +79,11 @@ class Controller {
         let adminId = req.session.userId
         let dataAdmin
 
-        let {sort} = req.query
+        let { sort } = req.query
         User.findByPk(adminId)
             .then((data) => {
                 dataAdmin = data
-                return User.findByRole(sort,Profile)
+                return User.findByRole(sort, Profile)
             })
             .then((user) => {
                 // res.send(user)
@@ -155,132 +151,156 @@ class Controller {
 
 
     static userAddProfile(req, res) {
-        
+        let {error} = req.query
+        let {UserId} = req.params
+        User.findByPk(UserId)
+        .then((user) =>{
+            res.render('addProfile', { user, error })
+        })
+        .catch((err) =>{
+            res.send(err)
+        })
     }
 
     static userCreateProfile(req, res) {
         let { UserId } = req.params
         let { fullName, location, job, company, profilePicture } = req.body
-        Profile.create({fullName, location, job, company, UserId})
-        .then(()=>{
-            return User.findByPk(UserId)
-        })
-        .then((data)=>{
-            if (data.role == 'admin') {
-                res.redirect('/admin') 
-            } else if (data.role == "user") {
-                res.redirect('/user')
-            }
-        })
-        .catch(err =>{
-            if (err.name === "SequelizeValidationError") {
-                const errors = err.errors.map(err => err.message)
-                res.redirect(`/addPofile/${UserId}?error=${errors}`);
-            } else res.send(err);
-        })
+        Profile.create({ fullName, location, job, company, UserId })
+            .then(() => {
+                return User.findByPk(UserId)
+            })
+            .then((data) => {
+                if (data.role == 'admin') {
+                    res.redirect('/admin')
+                } else if (data.role == "user") {
+                    res.redirect('/user')
+                }
+            })
+            .catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    const errors = err.errors.map(err => err.message)
+                    res.redirect(`/addPofile/${UserId}?error=${errors}`);
+                } else res.send(err);
+            })
     }
 
     //user
     static userHome(req, res) {
+        let {search} = req.query
+        let options ={
+            include: ['Users', 'User']
+        }
+
+        if (search) {
+            options.where = {
+                title: {[Op.iLike]: `%${search}%`}
+            }
+        }
+
         let posts;
-        Post.findAll({
-            include:['Users','User']
-        })
-        .then(result=>{
-            posts = result
-            return User.findByPk(req.session.userId)
-        })
-        .then(user =>{
-            res.render('user/userHome',{posts,user})
-        })
-        .catch(err =>{
-            res.send(err)
-        })
+        Post.findAll(options)
+            .then(result => {
+                posts = result
+                return User.findByPk(req.session.userId, {
+                    include: Profile
+                })
+            })
+            .then(user => {
+                res.render('user/userHome', { posts, user })
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static userAddPost(req, res) {
-        res.render('user/addPost')
+        let {error} = req.query
+
+        res.render('user/addPost', {error})
     }
 
-    static userLikePost(req,res) {
-        let {PostId,UserLikeId} = req.query
-        Favourite.create({PostId,UserLikeId})
-        .then(()=>{
-            res.redirect('/user')
-        })
-        .catch(err=>{
-            res.send(err)
-        })
+    static userLikePost(req, res) {
+        let { PostId, UserLikeId } = req.query
+        Favourite.create({ PostId, UserLikeId })
+            .then(() => {
+                res.redirect('/user')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
-    static userDislikePost(req,res){
-        let {PostId,UserLikeId} = req.query
+    static userDislikePost(req, res) {
+        let { PostId, UserLikeId } = req.query
         Favourite.destroy({
-            where:{
-                PostId,UserLikeId
+            where: {
+                PostId, UserLikeId
             }
         })
-        .then(()=>{
-            res.redirect('/user')
-        })
-        .catch(err=>{
-            res.send(err)
-        })
+            .then(() => {
+                res.redirect('/user')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static userCreatePost(req, res) {
-        let {title,content} = req.body
+        let { title, content } = req.body
         let imgUrl = req.file.filename
         let UserId = req.session.userId
-        Post.create({title,content,imgUrl,UserId})
-        .then(()=>{
-            res.redirect('/user')
-        })
-        .catch(err=>{
-            res.send(err)
-        })
+        Post.create({ title, content, imgUrl, UserId })
+            .then(() => {
+                res.redirect('/user')
+            })
+            .catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    const errors = err.errors.map(err => err.message)
+                    res.redirect(`/user/addPost?error=${errors}`);
+                } else res.send(err);
+            })
     }
 
     static userEditPost(req, res) {
-        let {PostId} = req.params
+        let { PostId } = req.params
         Post.findByPk(PostId)
-        .then(post=>{
-            res.render('user/editPost',{post})
-        })
-        .catch(err =>{
-            res.send(err)
-        })
+            .then(post => {
+                res.render('user/editPost', { post })
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static userUpdatePost(req, res) {
-        let {PostId} = req.params
-        let {title,content} = req.body
-        Post.update({title,content},{
-            where:{
-                id:PostId
+        let { PostId } = req.params
+        let { title, content } = req.body
+        Post.update({ title, content }, {
+            where: {
+                id: PostId
             }
         })
-        .then(()=>{
-            res.redirect('/user')
-        })
-        .catch(err =>{
-            res.send(err)
-        })
+            .then(() => {
+                res.redirect('/user')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static userDeletePost(req, res) {
-        let {PostId} = req.params
+        let { PostId } = req.params
         Post.destroy({
-            where:{
-                id:PostId
+            where: {
+                id: PostId
             }
         })
-        .then(()=>{
-            res.redirect('/user')
-        })
-        .catch(err =>{
-            res.send(err)
-        })
+            .then(() => {
+                res.redirect('/user')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 }
 

@@ -22,15 +22,24 @@
     <title>Homepage</title>
 </head>
 <body>
-    <a href="userAuth/loguot">Logout</a>
     <aside>
         <img src="https://e9g2x6t2.rocketcdn.me/wp-content/uploads/2021/01/FINAL-Blog-Images.jpg" alt="" width="50px">
+        
+        <h5><%=user.Profile.fullName%></h5>
+        <h5><%=user.Profile.jobCompany%></h5>
         <h5><%=user.email%></h5>
+        <a href="/userAuth/loguot"><button>Logout</button></a>
     </aside>
     <section>
         <div class="addPostBox">
             <a href="/user/addPost"><button>add post</button></a>
         </div>
+
+        <form action="/user/" method="get">
+            <input type="text" name="search">
+            <button type="submit">Search</button>
+        </form>
+
         <% posts.forEach(el=>{ %>
             <div class="card">
                 <h3><%= el.title %></h3>

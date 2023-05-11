@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Post,{through:models.Favourite,foreignKey:'UserLikeId'})
     }
 
+
     static findByRole(role, Profile){
       if (role == 'admin') {
         return User.findAll({

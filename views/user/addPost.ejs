@@ -7,6 +7,12 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Add New Post</h1><br>
+    <% if (error) { %>
+        <% error.split(',').forEach(el =>{ %>
+          <p style="color: red;"><%= el %></p>
+        <%}) %>
+      <% } %>
     <form action="/user/addPost" method="post" enctype="multipart/form-data">
         <label for="title">Post Title</label>
         <input type="text" name="title"><br><br>
