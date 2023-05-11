@@ -3,21 +3,22 @@
     "id": 1,
     "username": "asep661",
     "email": "asep@mail.com",
-    "role": "User",
-    "password": "asep123"
+    "role": "user",
+    "password": "$2a$10$dAdu2h9ObMU./hbV9KH.1u2rBB/orVKUVw05yXj06JLdcQmG.0JfW"
   },
   {
     "id": 2,
     "username": "mamat998",
     "email": "mamat@mail.com",
-    "role": "User",
-    "password": "mamat123"
+    "role": "user",
+    "password": "$2a$10$T31QyqRgVlcicDRAiJoTve5N9oKexaU9uL1GK6.JomEVuqaQ5/aDm"
   },
   {
     "id": 3,
     "username": "dadang212",
     "email": "dadang@mail.com",
-    "role": "Admin",
-    "password": "dadang123"
+    "role": "admin",
+    "password": "$2a$10$1g7rZ8UsqfO7OBEtgfgtieQDRu7QC5YR.Fdy5y//FKwvAjQ76CLkW" 
   }
 ]
+
