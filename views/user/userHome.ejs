@@ -4,11 +4,51 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            display: flex;
+        }
+        aside{
+            width:200px
+        }
+        .card{
+            width:500px;
+        }
+
+        .card img{
+            width: 100%;
+        }
+    </style>
     <title>Homepage</title>
 </head>
 <body>
-
-    <h1>ini udh login pake user</h1>
     <a href="userAuth/loguot">Logout</a>
+    <aside>
+        <img src="https://e9g2x6t2.rocketcdn.me/wp-content/uploads/2021/01/FINAL-Blog-Images.jpg" alt="" width="50px">
+        <h5><%=user.email%></h5>
+    </aside>
+    <section>
+        <div class="addPostBox">
+            <a href="/user/addPost"><button>add post</button></a>
+        </div>
+        <% posts.forEach(el=>{ %>
+            <div class="card">
+                <h3><%= el.title %></h3>
+                <p><%= el.content %></p>
+                <img src="<%=el.imgUrl%>" alt="">
+                <%= el.Users.length %>
+                <% if(el.Users.find(element => element.id === user.id)){ %>
+                    <a href="user/dislike?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>dislike</button></a>
+                <% }else{ %>
+                    <a href="user/like?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>like</button></a>
+                <% } %>
+                <% if(user.id === el.UserId){ %>
+                <a href="user/editPost/<%=el.id%>"><button>edit</button></a>
+                <a href="user/deletePost/<%=el.id%>"><button>delete</button></a>
+                <%}%>
+            </div>
+        <%})%>
+
+    </section>
 </body>
 </html>
