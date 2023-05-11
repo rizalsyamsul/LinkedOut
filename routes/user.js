@@ -5,6 +5,7 @@ const { isLoggedIn, roleAdmin, roleUser } = require("../middlewares/auth.js");
 
 
 router.get('/', roleUser, Controller.userHome) //meilhat postingan + seacrh berdasarkan keyword
+router.get('/like',roleUser, Controller.userLikePost)
 router.get('/addPost', roleUser, Controller.userAddPost)
 router.post('/addPost', roleUser, Controller.userCreatePost)
 router.get('/editPost/:UserId', roleUser, Controller.userEditPost)

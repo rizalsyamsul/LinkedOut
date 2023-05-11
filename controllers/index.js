@@ -37,7 +37,6 @@ class Controller {
                         } else if (user.role == "user") {
                             return res.redirect('/user');
                         }
-                        // return res.render('Homepage',{user})
 
                     }
                 }
@@ -90,13 +89,27 @@ class Controller {
 
     //user
     static userHome(req, res) {
-
-        res.render('user/userHome')
+        let posts;
+        Post.findAll()
+        .then(result=>{
+            posts = result
+            return User.findByPk(req.session.userId)
+        })
+        .then(user =>{
+            res.render('user/userHome',{posts,user})
+        })
+        .catch(err =>{
+            res.send(err)
+        })
     }
 
     static userAddPost(req, res) {
+        res.render('user/addPost')
+    }
 
-        res.render('user/userHome')
+    static userLikePost(req,res) {
+
+        res.send('kamu ngelike, tapi belum di simpan')
     }
 
     static userCreatePost(req, res) {
