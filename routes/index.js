@@ -11,6 +11,9 @@ router.use('/userAuth',userAuthRoute)
 
 router.use(isLoggedIn)
 
+router.get('/addPofile/:UserId', Controller.userAddProfile)
+router.post('/addPofile/:UserId', Controller.userCreateProfile)
+
 router.use('/admin',admin)
 router.use('/user',user)
 

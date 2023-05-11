@@ -1,10 +1,16 @@
 const { Post, Favourite, User, Profile } = require('../models')
 const bcrypt = require('bcryptjs');
+const dateFormatted = require('../helpers/dateFormatted')
 
 class Controller {
+    static home(req, res) {
+
+    }
+
+
     static userAuth(req, res) {
-        let { email } = req.query
-        res.render('userAuth', { email })
+        let { email, error } = req.query
+        res.render('userAuth', { email, error })
     }
 
     static register(req, res) {
@@ -23,7 +29,8 @@ class Controller {
         User.findOne({
             where: {
                 email
-            }
+            },
+            include: Profile
         })
             .then(user => {
                 if (user) {
@@ -33,12 +40,26 @@ class Controller {
                         req.session.role = user.role;
 
                         if (user.role == "admin") {
-                            return res.redirect('/admin');
+                            if (!user.Profile) {
+                                return res.render('addProfile', {user})
+                            } else {
+                                return res.redirect('/admin');
+                            }
                         } else if (user.role == "user") {
-                            return res.redirect('/user');
+                            if (!user.Profile) {
+                                return res.render('addProfile', {user})
+                            } else {
+                                return res.redirect('/user');
+                            }
                         }
 
+                    }else {
+                        const error = "Invalid email / password";
+                        return res.redirect(`/?error=${error}`);
                     }
+                }else {
+                    const error = "Invalid email / password";
+                    return res.redirect(`/?error=${error}`);
                 }
             })
             .catch(err => {
@@ -59,33 +80,105 @@ class Controller {
 
     //admin
     static adminHome(req, res) {
+        let adminId = req.session.userId
+        let dataAdmin
 
-        res.render('admin/adminHome')
+        let {sort} = req.query
+        User.findByPk(adminId)
+            .then((data) => {
+                dataAdmin = data
+                return User.findByRole(sort,Profile)
+            })
+            .then((user) => {
+                // res.send(user)
+                res.render('admin/adminHome', { dataAdmin, user, dateFormatted })
+            })
+            .catch(err => {
+                console.log(err);
+                res.send(err)
+            })
     }
-
-    static adminListuser(req, res) {
-
-        res.render('admin/adminHome')
-    }
-
 
     static adminEdituser(req, res) {
-
-        res.render('admin/adminHome')
+        let adminId = req.session.userId
+        let { userId } = req.params
+        let dataAdmin
+        User.findByPk(adminId)
+            .then((data) => {
+                dataAdmin = data
+                return User.findByPk(userId, {
+                    include: { model: Profile, required: true }
+                })
+            })
+            .then((user) => {
+                // res.send(user)
+                res.render('admin/adminEditUser', { dataAdmin, user, dateFormatted })
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static adminUpdateuser(req, res) {
+        let { username, email, role, fullName, location, job, company } = req.body
+        let { userId } = req.params
 
-        res.render('admin/adminHome')
+        User.update({ username, email, role }, {
+            where: { id: userId }
+        })
+            .then(() => {
+                return Profile.update({ fullName, location, job, company }, {
+                    where: { UserId: userId }
+                })
+            })
+            .then(() => {
+                res.redirect('/admin/')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
     static adminDeleteuser(req, res) {
-
-        res.render('admin/adminHome')
+        let { userId } = req.params
+        Profile.destroy({ where: { UserId: userId } })
+            .then(() => {
+                return User.destroy({ where: { id: userId } })
+            })
+            .then(() => {
+                res.redirect('/admin/')
+            })
+            .catch(err => {
+                res.send(err)
+            })
     }
 
 
+    static userAddProfile(req, res) {
+        
+    }
 
+    static userCreateProfile(req, res) {
+        let { UserId } = req.params
+        let { fullName, location, job, company, profilePicture } = req.body
+        Profile.create({fullName, location, job, company, UserId})
+        .then(()=>{
+            return User.findByPk(UserId)
+        })
+        .then((data)=>{
+            if (data.role == 'admin') {
+                res.redirect('/admin') 
+            } else if (data.role == "user") {
+                res.redirect('/user')
+            }
+        })
+        .catch(err =>{
+            if (err.name === "SequelizeValidationError") {
+                const errors = err.errors.map(err => err.message)
+                res.redirect(`/addPofile/${UserId}?error=${errors}`);
+            } else res.send(err);
+        })
+    }
 
     //user
     static userHome(req, res) {
@@ -147,7 +240,7 @@ class Controller {
             res.send(err)
         })
     }
-    
+
     static userEditPost(req, res) {
         let {PostId} = req.params
         Post.findByPk(PostId)

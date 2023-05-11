@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+</head>
+<body>
+    <h1>Halo Admin <%= dataAdmin.username %></h1>
+    <a href="/userAuth/loguot"><button>Logout</button></a><br><br>
+
+    <h2 style="text-align: center;">Edit User <%= user.Profile.fullName %> </h2>
+
+    <div style="display: flex; justify-content: center; align-items: center;">
+
+      <form action="/admin/listuser/<%= user.id %>/edit" method="post" >
+        <p>
+          <label>Username</label>
+          <input type="text" name="username" value="<%= user.username %>">
+        </p>
+
+        <p>
+          <label>Email</label>
+          <input type="email" name="email" value="<%= user.email %>">
+        </p>
+
+        <p>
+          <label>Full Name</label>
+          <input type="text" name="fullName" value="<%= user.Profile.fullName %>">
+        </p>
+
+        <p>
+          <label>Location</label>
+          <input type="text" name="location"  value="<%=user.Profile.location %>">
+        </p>
+
+        <p>
+          <label>Job</label>
+          <input type="text" name="job" value="<%=user.Profile.job %>">
+        </p>
+
+        <p>
+          <label>Company</label>
+          <input type="text" name="company" value="<%=user.Profile.company %>">
+        </p>
+        
+        <p>
+          <label> Role </label>
+          <select name="role" >
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+          </select>
+        </p>
+
+        <button type="submit">Edit</button>
+      </form>
+    </div>
+
+  
+</body>
+</html>
