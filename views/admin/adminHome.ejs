@@ -7,8 +7,50 @@
     <title>Homepage</title>
 </head>
 <body>
+    <h1>Halo Admin <%= dataAdmin.username %></h1>
+    <a href="/userAuth/loguot"><button>Logout</button></a><br><br>
 
-    <h1>ini udh login pake admin</h1>
-    <a href="userAuth/loguot">Logout</a>
+    <h2>List User LinkedOut</h2><br>
+    <p>
+        Sort By Role:
+        <a href="/admin/"> <button>All</button></a>
+        <a href="/admin/?sort=admin"><button>Admin</button></a>
+        <a href="/admin/?sort=user"><button>User</button></a>
+    </p>
+
+    <table border="1" style="width: 100%;">
+        <thead>
+            <th>No</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Location</th>
+            <th>Job</th>
+            <th>Company</th>
+            <th>Date Created User</th>
+            <th>Role</th>
+            <th>Action</th>
+        </thead>
+
+        <tbody>
+            <% user.forEach((el, index) =>{ %>
+                <tr>
+                    <td><%= index+1 %></td>
+                    <td><%= el.username %></td>
+                    <td><%= el.email %></td>
+                    <td><%= el.Profile.fullName %></td>
+                    <td><%= el.Profile.location %></td>
+                    <td><%= el.Profile.job %></td>
+                    <td><%= el.Profile.company %></td>
+                    <td><%= dateFormatted(el.createdAt) %></td>
+                    <td><%= el.role %></td>
+                    <td>
+                        <a href="/admin/listuser/<%= el.id %>/edit"><button>Edit</button></a>
+                        <a href="/admin/listuser/<%= el.id %>/delete"><button>Delete</button></a>
+                    </td>
+                </tr>
+            <%}) %>
+        </tbody>
+    </table>
 </body>
 </html>

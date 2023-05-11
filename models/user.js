@@ -1,5 +1,6 @@
 'use strict';
 const bcrypt = require('bcryptjs');
+const { Op } = require("sequelize");
 const {
   Model
 } = require('sequelize');
@@ -13,7 +14,42 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.hasOne(models.Profile)
-      User.belongsToMany(models.Post,{through:models.Favourite})
+
+      // User.hasMany(models.Favourite, {
+      //   foreignKey: 'UserLikeId'
+      // })
+      
+      User.hasMany(models.Post)
+    }
+
+    static findByRole(role, Profile){
+      if (role == 'admin') {
+        return User.findAll({
+          where: {role: {[Op.eq]: 'admin'}},
+          include: {
+            model: Profile,
+            required: true
+          },
+          order: [['username', 'ASC']]
+        })
+      }
+      if (role == 'user') {
+        return User.findAll({
+          where: {role: {[Op.eq]: 'user'}},
+          include: {
+            model: Profile,
+            required: true
+          },
+          order: [['username', 'ASC']]
+        })
+      }
+
+      return User.findAll({
+        include: {
+          model: Profile,
+          required: true
+        },
+        order: [['username', 'ASC']]})
     }
   }
   User.init({

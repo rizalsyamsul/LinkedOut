@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Post.belongsTo(models.User)
       Post.belongsToMany(models.User,{through:models.Favourite})
+
+      // Post.hasMany(models.Favourite)
     }
   }
   Post.init({
