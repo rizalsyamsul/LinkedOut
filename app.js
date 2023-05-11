@@ -5,6 +5,7 @@ const session = require('express-session')
 const port = 3000
 
 app.set('view engine','ejs')
+app.use(express.static('source'))
 app.use(express.urlencoded({extended:true}))
 app.use(session({
   secret: 'rahasia',

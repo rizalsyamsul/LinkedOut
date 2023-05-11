@@ -36,13 +36,19 @@
                 <h3><%= el.title %></h3>
                 <p><%= el.content %></p>
                 <img src="<%=el.imgUrl%>" alt="">
-                <a href="user/like?userLikeId=<%=user.userId%>&PostId=<%=el.id%>"><button>like</button></a>
+                <%= el.Users.length %>
+                <% if(el.Users.find(element => element.id === user.id)){ %>
+                    <a href="user/dislike?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>dislike</button></a>
+                <% }else{ %>
+                    <a href="user/like?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>like</button></a>
+                <% } %>
                 <% if(user.id === el.UserId){ %>
-                <a href="user/editPost/<%=el.UserId%>"><button>edit</button></a>
-                <a href="user/deletePost/<%=el.UserId%>"><button>delete</button></a>
+                <a href="user/editPost/<%=el.id%>"><button>edit</button></a>
+                <a href="user/deletePost/<%=el.id%>"><button>delete</button></a>
                 <%}%>
             </div>
         <%})%>
+
     </section>
 </body>
 </html>

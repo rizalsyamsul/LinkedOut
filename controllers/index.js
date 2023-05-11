@@ -90,7 +90,9 @@ class Controller {
     //user
     static userHome(req, res) {
         let posts;
-        Post.findAll()
+        Post.findAll({
+            include:['Users','User']
+        })
         .then(result=>{
             posts = result
             return User.findByPk(req.session.userId)
@@ -108,28 +110,84 @@ class Controller {
     }
 
     static userLikePost(req,res) {
+        let {PostId,UserLikeId} = req.query
+        Favourite.create({PostId,UserLikeId})
+        .then(()=>{
+            res.redirect('/user')
+        })
+        .catch(err=>{
+            res.send(err)
+        })
+    }
 
-        res.send('kamu ngelike, tapi belum di simpan')
+    static userDislikePost(req,res){
+        let {PostId,UserLikeId} = req.query
+        Favourite.destroy({
+            where:{
+                PostId,UserLikeId
+            }
+        })
+        .then(()=>{
+            res.redirect('/user')
+        })
+        .catch(err=>{
+            res.send(err)
+        })
     }
 
     static userCreatePost(req, res) {
-
-        res.render('user/userHome')
+        let {title,content} = req.body
+        let imgUrl = req.file.filename
+        let UserId = req.session.userId
+        Post.create({title,content,imgUrl,UserId})
+        .then(()=>{
+            res.redirect('/user')
+        })
+        .catch(err=>{
+            res.send(err)
+        })
     }
     
     static userEditPost(req, res) {
-
-        res.render('user/userHome')
+        let {PostId} = req.params
+        Post.findByPk(PostId)
+        .then(post=>{
+            res.render('user/editPost',{post})
+        })
+        .catch(err =>{
+            res.send(err)
+        })
     }
 
     static userUpdatePost(req, res) {
-
-        res.render('user/userHome')
+        let {PostId} = req.params
+        let {title,content} = req.body
+        Post.update({title,content},{
+            where:{
+                id:PostId
+            }
+        })
+        .then(()=>{
+            res.redirect('/user')
+        })
+        .catch(err =>{
+            res.send(err)
+        })
     }
 
     static userDeletePost(req, res) {
-
-        res.render('user/userHome')
+        let {PostId} = req.params
+        Post.destroy({
+            where:{
+                id:PostId
+            }
+        })
+        .then(()=>{
+            res.redirect('/user')
+        })
+        .catch(err =>{
+            res.send(err)
+        })
     }
 }
 
