@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             model: Profile,
             required: true
           },
-          order: [['username', 'ASC']]
+          order: [['id', 'DESC']]
         })
       }
       if (role == 'user') {
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
             model: Profile,
             required: true
           },
-          order: [['username', 'ASC']]
+          order: [['id', 'DESC']]
         })
       }
 
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
           model: Profile,
           required: true
         },
-        order: [['username', 'ASC']]})
+        order: [['id', 'DESC']]})
 
     }
   }
