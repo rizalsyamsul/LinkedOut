@@ -165,7 +165,7 @@ class Controller {
     static userCreateProfile(req, res) {
         let { UserId } = req.params
         let { fullName, location, job, company, profilePicture } = req.body
-        Profile.create({ fullName, location, job, company, UserId })
+        Profile.create({ fullName, location, job, company, UserId , profilePicture })
             .then(() => {
                 return User.findByPk(UserId)
             })
@@ -188,9 +188,14 @@ class Controller {
     static userHome(req, res) {
         let {search} = req.query
         let options ={
-            include: ['Users', 'User']
+            include:['Users',{
+                model:User,
+                include:{
+                    model:Profile
+                },
+                raw:true
+            }],
         }
-
         if (search) {
             options.where = {
                 title: {[Op.iLike]: `%${search}%`}
@@ -199,18 +204,18 @@ class Controller {
 
         let posts;
         Post.findAll(options)
-            .then(result => {
-                posts = result
-                return User.findByPk(req.session.userId, {
-                    include: Profile
-                })
+        .then(result => {
+            posts = result
+            return User.findByPk(req.session.userId, {
+                include: Profile
             })
-            .then(user => {
-                res.render('user/userHome', { posts, user })
-            })
-            .catch(err => {
-                res.send(err)
-            })
+        })
+        .then(user => {
+            res.render('user/userHome', { posts, user })
+        })
+        .catch(err => {
+            res.send(err)
+        })
     }
 
     static userAddPost(req, res) {

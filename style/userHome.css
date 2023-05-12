@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;600&display=swap');
+
+html,body{
+    margin: 0px;
+    padding: 0px;
+    background-color: rgb(255, 248, 239);
+}
+
+.navbar{
+    background-color: aqua;
+    height: 40px;
+    width: 100vw;
+    position: fixed;
+    display: flex;
+}
+
+.cardPost{
+    font-family: 'Poppins', sans-serif;
+    margin: 10px;
+    background-color: white;
+    border: 1px solid rgb(197, 197, 197);
+    border-radius: 5px;
+    display: grid;
+    grid-template-areas: 'satu dua'
+    'tiga tiga'
+    'empat empat'
+    'lima lima'
+    'enam enam';
+    grid-template-columns: 80px auto;
+    grid-template-rows: 80px auto auto auto;
+}
+
+.postProfile{
+    aspect-ratio: 3 / 3;
+    border-radius: 10%;
+    margin: 10px;
+    grid-area: satu;
+}
+
+.userInfo{
+    margin: 10px;
+    grid-area: dua;
+}
+
+.contentPost{
+    margin: 10px;
+    grid-area: tiga;
+}
+
+.postImage{
+    grid-area: empat;
+}
+
+.tombol{
+    display: flex;
+    justify-content: space-between;
+    grid-area: enam;
+    padding: 10px;
+}
+
+.userProfile{
+    font-family: 'Poppins', sans-serif;
+    width: 150px;
+    height: 180px;
+    background-color: white;
+    border: 1px solid rgb(197, 197, 197);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.info div{
+    margin: 10px;
+}
+
+.userProfile a{
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #19A7CE;
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.tombol a{
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #19A7CE;
+    width: 120px;
+    height: 40px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+}
+.content{
+    display: grid;
+    grid-template-areas: "left middle right";
+    grid-template-columns: 30% 40% 30%;
+}
+
+.likeBox{
+    display: flex;
+    grid-area: lima;
+    padding: 10px;
+    column-gap: 10px;
+}
+
+.leftContent{
+    padding-top: 50px;
+    grid-area: left;
+    padding-left: 180px;
+}
+.rightContent{
+    padding-top: 40px;
+    grid-area: right;
+}
+.middleContent{
+    padding-top: 40px;
+    grid-area: middle;
+    overflow: scroll;
+    height:100vh;
+}

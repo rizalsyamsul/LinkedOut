@@ -9,6 +9,41 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    get formatUpdatedDate(){
+      let stats;
+      if(this.createdAt.getDate() === this.updatedAt.getDate()){
+        stats = 'Created'
+      }else{
+        stats = 'Updated'
+      }
+
+      console.log(this.createdAt === this.updatedAt)
+
+      const diff = new Date() - this.updatedAt
+
+      const second = 1000
+      const minute = 1000 * 60;
+      const hour = minute * 60;
+      const day = hour * 24;
+      const year = day * 365;
+
+      let delay;
+
+      if(diff < minute){
+          delay = Math.floor(diff/second);
+          return `${stats} ${delay} Seconds Ago`
+      }else if(diff < hour){
+          delay = Math.floor(diff/minute);
+          return `${stats} ${delay} Minutes Ago`
+      }else if(diff < day){
+          delay = Math.floor(diff/hour);
+          return `${stats} ${delay} Hours Ago`
+      }else{
+          delay = Math.floor(diff/day)
+          return `${stats} ${delay} Days Ago`
+      }
+    }
+
     static associate(models) {
       // define association here
       Post.belongsTo(models.User)
