@@ -4,60 +4,68 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body{
-            display: flex;
-        }
-        aside{
-            width:200px
-        }
-        .card{
-            width:500px;
-        }
-
-        .card img{
-            width: 100%;
-        }
-    </style>
-    <title>Homepage</title>
+    <link rel="stylesheet" href="/style/userHome.css">
+    <title><%= user.Profile.fullName %> || Homepage</title>
 </head>
 <body>
-    <aside>
-        <img src="https://e9g2x6t2.rocketcdn.me/wp-content/uploads/2021/01/FINAL-Blog-Images.jpg" alt="" width="50px">
-        
-        <h5><%=user.Profile.fullName%></h5>
-        <h5><%=user.Profile.jobCompany%></h5>
-        <h5><%=user.email%></h5>
-        <a href="/userAuth/loguot"><button>Logout</button></a>
-    </aside>
-    <section>
-        <div class="addPostBox">
-            <a href="/user/addPost"><button>add post</button></a>
-        </div>
-
+    <div class="navbar">
+        <a href="/user/addPost"><button>add post</button></a>
         <form action="/user/" method="get">
             <input type="text" name="search">
             <button type="submit">Search</button>
         </form>
+    </div>
 
-        <% posts.forEach(el=>{ %>
-            <div class="card">
-                <h3><%= el.title %></h3>
-                <p><%= el.content %></p>
-                <img src="<%=el.imgUrl%>" alt="">
-                <%= el.Users.length %>
-                <% if(el.Users.find(element => element.id === user.id)){ %>
-                    <a href="user/dislike?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>dislike</button></a>
-                <% }else{ %>
-                    <a href="user/like?UserLikeId=<%=user.id%>&PostId=<%=el.id%>"><button>like</button></a>
-                <% } %>
-                <% if(user.id === el.UserId){ %>
-                <a href="user/editPost/<%=el.id%>"><button>edit</button></a>
-                <a href="user/deletePost/<%=el.id%>"><button>delete</button></a>
-                <%}%>
+    <div class="content">
+
+        <div class="leftContent">
+            <div class="userProfile">
+                <img src="<%= user.Profile.profilePicture %>" alt="" width="100px">
+                <div class="info">
+                    <div class="nameUser" style="font-size: 10px;font-weight: 200;"><%=user.Profile.fullName%></div>
+                    <div class="job" style="font-size: 10px;font-weight: 200;"><%=user.Profile.jobCompany%></div>
+                    <div class="emailUser" style="font-size: 10px;font-weight: 200;"><%=user.email%></div>
+                </div>
+                <a href="/userAuth/loguot">Logout</a>
             </div>
-        <%})%>
+        </div>
 
-    </section>
+
+        <div class="middleContent">
+            <% posts.forEach(el=>{ %>
+    <div class="cardPost">
+    <img src="<%=el.User.Profile.profilePicture%>" alt="" class="postProfile" width="60px">
+    <div class="userInfo">
+        <div class="postPoster" style="font-size: 10px;font-weight: 400;"><%= el.User.Profile.fullName %></div>
+        <div class="postLocation" style="font-size: 10px;font-weight: 200;"><%= el.User.Profile.location %></div>
+        <div class="createdDate" style="font-size: 10px;font-weight: 200;"><%= el.formatUpdatedDate %></div>
+    </div>
+    <div class="contentPost">
+        <div class="titlePost" style="font-size: 16px;font-weight: 400;"><%= el.title %></div>
+        <div class="contentPost" style="font-size: 10px;font-weight: 200;"><%= el.content %></div>
+    </div>
+    <img src="<%=el.imgUrl%>" alt="" width="100%" class="postImage">
+    <div class="likeBox">
+        <img src="https://cdn-icons-png.flaticon.com/512/4102/4102964.png" alt="" width="20px" height="20px">
+        <div class="like"><%= el.Users.length %></div>
+        <div class="whoLike"></div>
+    </div>
+    <div class="tombol">
+        <% if(el.Users.find(element => element.id === user.id)){ %>
+            <a href="user/dislike?UserLikeId=<%=user.id%>&PostId=<%=el.id%>">dislike</a>
+        <% }else{ %>
+            <a href="user/like?UserLikeId=<%=user.id%>&PostId=<%=el.id%>">like</a>
+        <% } %>
+        <% if(user.id === el.UserId){ %>
+        <a href="user/editPost/<%=el.id%>">Edit</a>
+        <a href="user/deletePost/<%=el.id%>">Delete</a>
+        <%}%>
+    </div>
+    </div>
+            <%})%>
+        </div>
+
+        <div class="rightContent"></div>
+    </div>
 </body>
 </html>

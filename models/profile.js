@@ -57,6 +57,14 @@ module.exports = (sequelize, DataTypes) => {
           msg: `UserId is required`
         }
       }
+    },
+    profilePicture:{
+      type:DataTypes.TEXT,
+      validate: {
+        notEmpty:{
+          msg: `Profile Picture is required`
+        }
+      }
     }
   }, {
     sequelize,
